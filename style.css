@@ -10,7 +10,7 @@ html {
 }
 
 body {
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
   color: #444;
   background-color: #f3f3f3;
   height: 100vh;
@@ -75,6 +75,18 @@ nav {
 .btn--sort:focus {
   outline: none;
   color: #777;
+}
+
+.error {
+  display: none;
+  background-color: red;
+  width: 450px;
+  padding: 1rem 5rem;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 1.2rem;
+  margin: 0 auto;
+  text-align: center;
 }
 
 /* MAIN */
