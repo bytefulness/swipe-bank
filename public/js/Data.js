@@ -37,3 +37,4 @@ export const account2 = {
     username: '',
 };
 export const accounts = [account1, account2];
+//# sourceMappingURL=Data.js.map

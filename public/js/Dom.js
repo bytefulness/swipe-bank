@@ -25,3 +25,4 @@ class DomElements {
     }
 }
 export default new DomElements();
+//# sourceMappingURL=Dom.js.map
