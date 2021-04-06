@@ -1,7 +1,7 @@
 // Modules
 import * as Data from './Data.js';
 import Dom from './Dom.js';
-import { clearInput } from './helper.js';
+import * as Helper from './helper.js';
 
 class App {
   public currentAccount!: any;
@@ -38,11 +38,11 @@ class App {
       Dom.containerApp.style.opacity = '100';
 
       // Clear Inputs
-      clearInput(Dom.inputLoginUsername, Dom.inputLoginPin);
+      Helper.clearInput(Dom.inputLoginUsername, Dom.inputLoginPin);
 
       this.updateUI(this.currentAccount);
     } else {
-      this.displayErrorMessage();
+      Helper.displayErrorMessage('Wrong id or password. Please try again.');
     }
   }
 
@@ -62,7 +62,7 @@ class App {
     movements.forEach((mov, i) => {
       const type: string = mov > 0 ? 'deposit' : 'withdrawal';
       const date: any = new Date(account.movementsDates[i]);
-      const displayDate = this.formatMovementDate(date, account.locale);
+      const displayDate = Helper.formatMovementDate(date, account.locale);
 
       const html = `
       <div class="movements__row">
@@ -70,7 +70,7 @@ class App {
         i + 1
       } ${type}</div>
       <div class="movements__date">${displayDate}</div>
-        <div class="movements__value">${this.formatCurrency(
+        <div class="movements__value">${Helper.formatCurrency(
           mov,
           account.locale,
           account.currency
@@ -89,7 +89,7 @@ class App {
     );
 
     // Display result to UI
-    Dom.labelBalance.textContent = this.formatCurrency(
+    Dom.labelBalance.textContent = Helper.formatCurrency(
       account.balance,
       account.locale,
       account.currency
@@ -103,7 +103,7 @@ class App {
       .reduce((acc: number, mov: number): number => acc + mov, 0);
 
     // Display incomes at UI
-    Dom.labelSumIn.textContent = this.formatCurrency(
+    Dom.labelSumIn.textContent = Helper.formatCurrency(
       incomes,
       account.locale,
       account.currency
@@ -115,7 +115,7 @@ class App {
       .reduce((acc: number, mov: number): number => acc + mov, 0);
 
     // Display outs at UI
-    Dom.labelSumOut.textContent = this.formatCurrency(
+    Dom.labelSumOut.textContent = Helper.formatCurrency(
       Math.abs(out),
       account.locale,
       account.currency
@@ -129,37 +129,11 @@ class App {
       .reduce((acc: number, int: number) => acc + int, 0);
 
     // Display interests at UI
-    Dom.labelSumInterest.textContent = this.formatCurrency(
+    Dom.labelSumInterest.textContent = Helper.formatCurrency(
       interest,
       account.locale,
       account.currency
     );
-  }
-
-  private formatMovementDate(date: any, locale: string) {
-    const calcDaysPassed = (date1: any, date2: any) =>
-      // Prevent opposite date that results to - = Add Math.abs();
-      Math.round(Math.abs((date2 - date1) / (1000 * 60 * 60 * 24)));
-
-    const dayPassed = calcDaysPassed(new Date(), date);
-
-    if (dayPassed === 0) return 'Today';
-    if (dayPassed === 1) return 'Yesteday';
-    if (dayPassed <= 7) return `${dayPassed} days`;
-
-    return new Intl.DateTimeFormat(locale).format(date);
-  }
-
-  private formatCurrency(value: any, locale: any, currency: any) {
-    return new Intl.NumberFormat(locale, {
-      style: 'currency',
-      currency: currency,
-    }).format(value);
-  }
-
-  private displayErrorMessage(): void {
-    Dom.errorMessage.style.display = 'block';
-    setTimeout(() => (Dom.errorMessage.style.display = 'none'), 3000);
   }
 }
 
