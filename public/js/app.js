@@ -37,6 +37,7 @@ class App {
     updateUI(account) {
         this.displayMovements(account);
         this.caclDisplayBalance(account);
+        this.calcDisplaySummary(account);
     }
     displayMovements(account) {
         Dom.containerMovements.innerHTML = '';
@@ -61,6 +62,28 @@ class App {
         account.balance = account.movements.reduce((acc, mov) => acc + mov, 0);
         // Display result to UI
         Dom.labelBalance.textContent = this.formatCurrency(account.balance, account.locale, account.currency);
+    }
+    calcDisplaySummary(account) {
+        // Calculate incomes
+        const incomes = account.movements
+            .filter((mov) => mov > 0)
+            .reduce((acc, mov) => acc + mov, 0);
+        // Display incomes at UI
+        Dom.labelSumIn.textContent = this.formatCurrency(incomes, account.locale, account.currency);
+        // Calculate outs
+        const out = account.movements
+            .filter((mov) => mov < 0)
+            .reduce((acc, mov) => acc + mov, 0);
+        // Display outs at UI
+        Dom.labelSumOut.textContent = this.formatCurrency(Math.abs(out), account.locale, account.currency);
+        // Calculate interest
+        const interest = account.movements
+            .filter((mov) => mov > 0)
+            .map((deposit) => (deposit * account.interestRate) / 100)
+            .filter((int) => int >= 1)
+            .reduce((acc, int) => acc + int, 0);
+        // Display interests at UI
+        Dom.labelSumInterest.textContent = this.formatCurrency(interest, account.locale, account.currency);
     }
     formatMovementDate(date, locale) {
         const calcDaysPassed = (date1, date2) => 

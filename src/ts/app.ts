@@ -49,6 +49,7 @@ class App {
   private updateUI(account: object) {
     this.displayMovements(account);
     this.caclDisplayBalance(account);
+    this.calcDisplaySummary(account);
   }
 
   private displayMovements(account: any) {
@@ -90,6 +91,46 @@ class App {
     // Display result to UI
     Dom.labelBalance.textContent = this.formatCurrency(
       account.balance,
+      account.locale,
+      account.currency
+    );
+  }
+
+  private calcDisplaySummary(account: any): void {
+    // Calculate incomes
+    const incomes: number = account.movements
+      .filter((mov: number): boolean => mov > 0)
+      .reduce((acc: number, mov: number): number => acc + mov, 0);
+
+    // Display incomes at UI
+    Dom.labelSumIn.textContent = this.formatCurrency(
+      incomes,
+      account.locale,
+      account.currency
+    );
+
+    // Calculate outs
+    const out: number = account.movements
+      .filter((mov: number): boolean => mov < 0)
+      .reduce((acc: number, mov: number): number => acc + mov, 0);
+
+    // Display outs at UI
+    Dom.labelSumOut.textContent = this.formatCurrency(
+      Math.abs(out),
+      account.locale,
+      account.currency
+    );
+
+    // Calculate interest
+    const interest: number = account.movements
+      .filter((mov: number): boolean => mov > 0)
+      .map((deposit: number): number => (deposit * account.interestRate) / 100)
+      .filter((int: number): boolean => int >= 1)
+      .reduce((acc: number, int: number) => acc + int, 0);
+
+    // Display interests at UI
+    Dom.labelSumInterest.textContent = this.formatCurrency(
+      interest,
       account.locale,
       account.currency
     );
