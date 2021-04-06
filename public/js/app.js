@@ -1,6 +1,7 @@
 // Modules
 import * as Data from './Data.js';
 import Dom from './Dom.js';
+import { clearInput } from './helper.js';
 class App {
     constructor() {
         this.createUsernames(Data.accounts);
@@ -26,7 +27,7 @@ class App {
             // Display UI
             Dom.containerApp.style.opacity = '100';
             // Clear Inputs
-            this.clearInput(Dom.inputLoginUsername, Dom.inputLoginPin);
+            clearInput(Dom.inputLoginUsername, Dom.inputLoginPin);
             this.updateUI(this.currentAccount);
         }
         else {
@@ -35,6 +36,7 @@ class App {
     }
     updateUI(account) {
         this.displayMovements(account);
+        this.caclDisplayBalance(account);
     }
     displayMovements(account) {
         Dom.containerMovements.innerHTML = '';
@@ -54,6 +56,11 @@ class App {
     `;
             Dom.containerMovements.insertAdjacentHTML('afterbegin', html);
         });
+    }
+    caclDisplayBalance(account) {
+        account.balance = account.movements.reduce((acc, mov) => acc + mov, 0);
+        // Display result to UI
+        Dom.labelBalance.textContent = this.formatCurrency(account.balance, account.locale, account.currency);
     }
     formatMovementDate(date, locale) {
         const calcDaysPassed = (date1, date2) => 
@@ -77,10 +84,6 @@ class App {
     displayErrorMessage() {
         Dom.errorMessage.style.display = 'block';
         setTimeout(() => (Dom.errorMessage.style.display = 'none'), 3000);
-    }
-    clearInput(...input) {
-        input.forEach((element) => (element.value = ''));
-        input.forEach((element) => element.blur());
     }
 }
 new App();

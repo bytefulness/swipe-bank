@@ -7,6 +7,7 @@ type account = {
   currency: string;
   locale: string;
   username: string;
+  balance: number | undefined;
 };
 
 export const account1: account = {
@@ -28,6 +29,7 @@ export const account1: account = {
   currency: 'EUR',
   locale: 'pt-PT', // de-DE
   username: '',
+  balance: undefined,
 };
 
 export const account2: account = {
@@ -49,6 +51,7 @@ export const account2: account = {
   currency: 'USD',
   locale: 'en-US',
   username: '',
+  balance: undefined,
 };
 
 export const accounts: object[] = [account1, account2];

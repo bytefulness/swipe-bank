@@ -16,6 +16,7 @@ export const account1 = {
     currency: 'EUR',
     locale: 'pt-PT',
     username: '',
+    balance: undefined,
 };
 export const account2 = {
     owner: 'Jack Dom',
@@ -35,6 +36,7 @@ export const account2 = {
     currency: 'USD',
     locale: 'en-US',
     username: '',
+    balance: undefined,
 };
 export const accounts = [account1, account2];
 //# sourceMappingURL=Data.js.map

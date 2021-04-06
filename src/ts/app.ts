@@ -48,6 +48,7 @@ class App {
 
   private updateUI(account: object) {
     this.displayMovements(account);
+    this.caclDisplayBalance(account);
   }
 
   private displayMovements(account: any) {
@@ -78,6 +79,20 @@ class App {
 
       Dom.containerMovements.insertAdjacentHTML('afterbegin', html);
     });
+  }
+
+  private caclDisplayBalance(account: any) {
+    account.balance = account.movements.reduce(
+      (acc: number, mov: number) => acc + mov,
+      0
+    );
+
+    // Display result to UI
+    Dom.labelBalance.textContent = this.formatCurrency(
+      account.balance,
+      account.locale,
+      account.currency
+    );
   }
 
   private formatMovementDate(date: any, locale: string) {
