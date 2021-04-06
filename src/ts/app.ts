@@ -1,6 +1,7 @@
 // Modules
 import * as Data from './Data.js';
 import Dom from './Dom.js';
+import { clearInput } from './helper.js';
 
 class App {
   public currentAccount!: any;
@@ -37,7 +38,7 @@ class App {
       Dom.containerApp.style.opacity = '100';
 
       // Clear Inputs
-      this.clearInput(Dom.inputLoginUsername, Dom.inputLoginPin);
+      clearInput(Dom.inputLoginUsername, Dom.inputLoginPin);
 
       this.updateUI(this.currentAccount);
     } else {
@@ -103,11 +104,6 @@ class App {
   private displayErrorMessage(): void {
     Dom.errorMessage.style.display = 'block';
     setTimeout(() => (Dom.errorMessage.style.display = 'none'), 3000);
-  }
-
-  private clearInput(...input: any): void {
-    input.forEach((element: any) => (element.value = ''));
-    input.forEach((element: any) => element.blur());
   }
 }
 
