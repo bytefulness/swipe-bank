@@ -10,6 +10,7 @@ class App {
         Dom.btnTransfer.addEventListener('click', this.transfer.bind(this));
         Dom.btnLoan.addEventListener('click', this.loan.bind(this));
         Dom.btnClose.addEventListener('click', this.closeAccount.bind(this));
+        Dom.btnSort.addEventListener('click', this.sortMovements.bind(this));
     }
     createUsernames(accounts) {
         accounts.forEach((account) => {
@@ -43,12 +44,14 @@ class App {
         this.caclDisplayBalance(account);
         this.calcDisplaySummary(account);
     }
-    displayMovements(account) {
+    displayMovements(account, sort = false) {
         Dom.containerMovements.innerHTML = '';
-        console.log(this.currentAccount);
-        const movements = account.movements;
+        const movs = sort
+            ? [...account.movements].sort((a, b) => a - b)
+            : account.movements;
+        // const movements:  = account.movements;
         // Render movements list
-        movements.forEach((mov, i) => {
+        movs.forEach((mov, i) => {
             const type = mov > 0 ? 'deposit' : 'withdrawal';
             const date = new Date(account.movementsDates[i]);
             const displayDate = Helper.formatMovementDate(date, account.locale);
@@ -154,6 +157,11 @@ class App {
         }
         Helper.clearInput(Dom.inputCloseUsername, Dom.inputClosePin);
         console.log(Data.accounts);
+    }
+    sortMovements(e) {
+        e.preventDefault();
+        this.displayMovements(this.currentAccount, !this.sorted);
+        this.sorted = !this.sorted;
     }
 }
 new App();

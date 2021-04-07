@@ -5,6 +5,7 @@ import * as Helper from './helper.js';
 
 class App {
   public currentAccount!: any;
+  private sorted!: boolean;
 
   constructor() {
     this.createUsernames(Data.accounts);
@@ -14,6 +15,7 @@ class App {
     Dom.btnTransfer.addEventListener('click', this.transfer.bind(this));
     Dom.btnLoan.addEventListener('click', this.loan.bind(this));
     Dom.btnClose.addEventListener('click', this.closeAccount.bind(this));
+    Dom.btnSort.addEventListener('click', this.sortMovements.bind(this));
   }
 
   private createUsernames(accounts: object[]): void {
@@ -56,14 +58,17 @@ class App {
     this.calcDisplaySummary(account);
   }
 
-  private displayMovements(account: any) {
+  private displayMovements(account: any, sort: boolean = false) {
     Dom.containerMovements.innerHTML = '';
-    console.log(this.currentAccount);
 
-    const movements: [] = account.movements;
+    const movs: [] = sort
+      ? [...account.movements].sort((a: any, b: any) => a - b)
+      : account.movements;
+
+    // const movements:  = account.movements;
 
     // Render movements list
-    movements.forEach((mov, i) => {
+    movs.forEach((mov: number, i: number) => {
       const type: string = mov > 0 ? 'deposit' : 'withdrawal';
       const date: any = new Date(account.movementsDates[i]);
       const displayDate = Helper.formatMovementDate(date, account.locale);
@@ -231,6 +236,12 @@ class App {
 
     Helper.clearInput(Dom.inputCloseUsername, Dom.inputClosePin);
     console.log(Data.accounts);
+  }
+
+  private sortMovements(e: any) {
+    e.preventDefault();
+    this.displayMovements(this.currentAccount, !this.sorted);
+    this.sorted = !this.sorted;
   }
 }
 
