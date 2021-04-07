@@ -7,6 +7,7 @@ class App {
         this.createUsernames(Data.accounts);
         // Event Listeners
         Dom.btnLogin.addEventListener('click', this.login.bind(this));
+        Dom.btnTransfer.addEventListener('click', this.transfer.bind(this));
     }
     createUsernames(accounts) {
         accounts.forEach((account) => {
@@ -31,7 +32,8 @@ class App {
             this.updateUI(this.currentAccount);
         }
         else {
-            Helper.displayErrorMessage('Wrong id or password. Please try again.');
+            const message = 'Wrong id or password. Please try again.';
+            Helper.displayMessage(message, 'error', 3);
         }
     }
     updateUI(account) {
@@ -84,6 +86,34 @@ class App {
             .reduce((acc, int) => acc + int, 0);
         // Display interests at UI
         Dom.labelSumInterest.textContent = Helper.formatCurrency(interest, account.locale, account.currency);
+    }
+    transfer(e) {
+        e.preventDefault();
+        const amount = Math.floor(+Dom.inputTransferAmount.value);
+        const receiverAccount = Data.accounts.find((account) => account.username === Dom.inputTransferTo.value);
+        Helper.clearInput(Dom.inputTransferAmount, Dom.inputTransferTo);
+        // Process
+        if (amount > 0 &&
+            receiverAccount &&
+            this.currentAccount.balance >= amount &&
+            (receiverAccount === null || receiverAccount === void 0 ? void 0 : receiverAccount.username) !== this.currentAccount.username) {
+            const message = 'Talimat alındı çok kısa sürede işleminiz gerçekleşecek.';
+            Helper.displayMessage(message, 'info', 4);
+            setTimeout(() => {
+                // Doing the transfer
+                this.currentAccount.movements.push(-amount);
+                receiverAccount.movements.push(amount);
+                // Add Transfer Date
+                this.currentAccount.movementsDates.push(new Date().toISOString());
+                receiverAccount.movementsDates.push(new Date().toISOString());
+                // Update UI
+                this.updateUI(this.currentAccount);
+            }, 5000);
+        }
+        else {
+            const message = 'İşleminizi gerçekleştiremiyoruz.';
+            Helper.displayMessage(message, 'error', 3);
+        }
     }
 }
 new App();

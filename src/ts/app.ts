@@ -11,6 +11,7 @@ class App {
 
     // Event Listeners
     Dom.btnLogin.addEventListener('click', this.login.bind(this));
+    Dom.btnTransfer.addEventListener('click', this.transfer.bind(this));
   }
 
   private createUsernames(accounts: object[]): void {
@@ -42,7 +43,8 @@ class App {
 
       this.updateUI(this.currentAccount);
     } else {
-      Helper.displayErrorMessage('Wrong id or password. Please try again.');
+      const message = 'Wrong id or password. Please try again.';
+      Helper.displayMessage(message, 'error', 3);
     }
   }
 
@@ -134,6 +136,44 @@ class App {
       account.locale,
       account.currency
     );
+  }
+
+  private transfer(e: any) {
+    e.preventDefault();
+
+    const amount: number = Math.floor(+Dom.inputTransferAmount.value);
+    const receiverAccount: any = Data.accounts.find(
+      (account: any) => account.username === Dom.inputTransferTo.value
+    );
+
+    Helper.clearInput(Dom.inputTransferAmount, Dom.inputTransferTo);
+
+    // Process
+    if (
+      amount > 0 &&
+      receiverAccount &&
+      this.currentAccount.balance >= amount &&
+      receiverAccount?.username !== this.currentAccount.username
+    ) {
+      const message = 'Talimat alındı çok kısa sürede işleminiz gerçekleşecek.';
+      Helper.displayMessage(message, 'info', 4);
+
+      setTimeout(() => {
+        // Doing the transfer
+        this.currentAccount.movements.push(-amount);
+        receiverAccount.movements.push(amount);
+
+        // Add Transfer Date
+        this.currentAccount.movementsDates.push(new Date().toISOString());
+        receiverAccount.movementsDates.push(new Date().toISOString());
+
+        // Update UI
+        this.updateUI(this.currentAccount);
+      }, 5000);
+    } else {
+      const message = 'İşleminizi gerçekleştiremiyoruz.';
+      Helper.displayMessage(message, 'error', 3);
+    }
   }
 }
 
