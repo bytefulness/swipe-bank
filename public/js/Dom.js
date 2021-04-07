@@ -21,7 +21,7 @@ class DomElements {
         this.inputLoanAmount = document.querySelector('.form__input--loan-amount');
         this.inputCloseUsername = document.querySelector('.form__input--user');
         this.inputClosePin = document.querySelector('.form__input--pin');
-        this.errorMessage = document.querySelector('.error');
+        this.message = document.querySelector('.message');
     }
 }
 export default new DomElements();

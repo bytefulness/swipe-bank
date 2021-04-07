@@ -26,8 +26,25 @@ export const formatCurrency = (value: any, locale: any, currency: any) => {
   }).format(value);
 };
 
-export const displayErrorMessage = (errorMessage: string): void => {
-  Dom.errorMessage.style.display = 'block';
-  Dom.errorMessage.textContent = errorMessage;
-  setTimeout(() => (Dom.errorMessage.style.display = 'none'), 3000);
+export const displayMessage = (
+  message: string,
+  messageType: string,
+  seconds: number
+): void => {
+  if (messageType === 'info')
+    Dom.message.classList.add(`message--${messageType}`);
+
+  if (messageType === 'error')
+    Dom.message.classList.add(`message--${messageType}`);
+
+  Dom.message.style.display = 'block';
+  Dom.message.textContent = message;
+
+  setTimeout(() => {
+    Dom.message.style.display = 'none';
+
+    // Clear classnames
+    Dom.message.className = '';
+    Dom.message.classList.add('message');
+  }, seconds * 1000);
 };

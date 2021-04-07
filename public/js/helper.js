@@ -22,9 +22,18 @@ export const formatCurrency = (value, locale, currency) => {
         currency: currency,
     }).format(value);
 };
-export const displayErrorMessage = (errorMessage) => {
-    Dom.errorMessage.style.display = 'block';
-    Dom.errorMessage.textContent = errorMessage;
-    setTimeout(() => (Dom.errorMessage.style.display = 'none'), 3000);
+export const displayMessage = (message, messageType, seconds) => {
+    if (messageType === 'info')
+        Dom.message.classList.add(`message--${messageType}`);
+    if (messageType === 'error')
+        Dom.message.classList.add(`message--${messageType}`);
+    Dom.message.style.display = 'block';
+    Dom.message.textContent = message;
+    setTimeout(() => {
+        Dom.message.style.display = 'none';
+        // Clear classnames
+        Dom.message.className = '';
+        Dom.message.classList.add('message');
+    }, seconds * 1000);
 };
 //# sourceMappingURL=helper.js.map

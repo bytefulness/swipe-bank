@@ -42,7 +42,7 @@ class DomElements {
     '.form__input--pin'
   ) as HTMLInputElement;
 
-  errorMessage = document.querySelector('.error') as HTMLDivElement;
+  message = document.querySelector('.message') as HTMLDivElement;
 }
 
 export default new DomElements();
