@@ -8,6 +8,7 @@ class App {
         // Event Listeners
         Dom.btnLogin.addEventListener('click', this.login.bind(this));
         Dom.btnTransfer.addEventListener('click', this.transfer.bind(this));
+        Dom.btnLoan.addEventListener('click', this.loan.bind(this));
     }
     createUsernames(accounts) {
         accounts.forEach((account) => {
@@ -113,6 +114,31 @@ class App {
         else {
             const message = 'İşleminizi gerçekleştiremiyoruz.';
             Helper.displayMessage(message, 'error', 3);
+        }
+    }
+    loan(e) {
+        e.preventDefault();
+        const amount = +Dom.inputLoanAmount.value;
+        if (amount > 0 &&
+            this.currentAccount.movements.some((mov) => mov >= amount * 0.1)) {
+            // Add movement
+            const message = 'Talimat alındı çok kısa sürede işleminiz gerçekleşecek';
+            Helper.displayMessage(message, 'info', 3);
+            setTimeout(() => {
+                // Add movements
+                this.currentAccount.movements.push(amount);
+                // Add movement date
+                this.currentAccount.movementsDates.push(new Date().toISOString());
+                // Update UI
+                this.updateUI(this.currentAccount);
+                // Clear inputs
+                Helper.clearInput(Dom.inputLoanAmount);
+            }, 3000);
+        }
+        else {
+            const message = 'Failed transaction. Please contact us.';
+            Helper.displayMessage(message, 'error', 3);
+            Helper.clearInput(Dom.inputLoanAmount);
         }
     }
 }
