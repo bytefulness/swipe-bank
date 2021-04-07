@@ -9,6 +9,7 @@ class App {
         Dom.btnLogin.addEventListener('click', this.login.bind(this));
         Dom.btnTransfer.addEventListener('click', this.transfer.bind(this));
         Dom.btnLoan.addEventListener('click', this.loan.bind(this));
+        Dom.btnClose.addEventListener('click', this.closeAccount.bind(this));
     }
     createUsernames(accounts) {
         accounts.forEach((account) => {
@@ -140,6 +141,19 @@ class App {
             Helper.displayMessage(message, 'error', 3);
             Helper.clearInput(Dom.inputLoanAmount);
         }
+    }
+    closeAccount(e) {
+        e.preventDefault();
+        if (Dom.inputCloseUsername.value === this.currentAccount.username &&
+            +Dom.inputClosePin.value === this.currentAccount.pin) {
+            const index = Data.accounts.findIndex((account) => account.username === this.currentAccount.username);
+            // Delete account
+            Data.accounts.splice(index, 1);
+            // Hide UI
+            Dom.containerApp.style.opacity = '0';
+        }
+        Helper.clearInput(Dom.inputCloseUsername, Dom.inputClosePin);
+        console.log(Data.accounts);
     }
 }
 new App();
