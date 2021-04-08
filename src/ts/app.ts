@@ -6,9 +6,17 @@ import * as Helper from './helper.js';
 class App {
   public currentAccount!: any;
   private sorted!: boolean;
+  private accountsData!: [];
 
   constructor() {
-    this.createUsernames(Data.accounts);
+    // Check local storage
+    if (localStorage.getItem('accounts') === null) {
+      this.setDataToLocalStorage();
+    }
+
+    this.getLocalStorage();
+
+    this.createUsernames(this.accountsData);
 
     // Event Listeners
     Dom.btnLogin.addEventListener('click', this.login.bind(this));
@@ -30,7 +38,7 @@ class App {
 
   private login(e: any): void {
     e.preventDefault();
-    this.currentAccount = Data.accounts.find(
+    this.currentAccount = this.accountsData.find(
       (account: any) => account.username === Dom.inputLoginUsername!.value
     );
 
@@ -151,7 +159,7 @@ class App {
     e.preventDefault();
 
     const amount: number = Math.floor(+Dom.inputTransferAmount.value);
-    const receiverAccount: any = Data.accounts.find(
+    const receiverAccount: any = this.accountsData.find(
       (account: any) => account.username === Dom.inputTransferTo.value
     );
 
@@ -179,6 +187,8 @@ class App {
 
         // Update UI
         this.updateUI(this.currentAccount);
+
+        this.setLocalStorage();
       }, 5000);
     } else {
       const message: string = 'Failed transaction. Please contact us.';
@@ -212,6 +222,8 @@ class App {
 
         // Clear inputs
         Helper.clearInput(Dom.inputLoanAmount);
+
+        this.setLocalStorage();
       }, 3000);
     } else {
       const message: string = 'Failed transaction. Please contact us.';
@@ -227,15 +239,17 @@ class App {
       Dom.inputCloseUsername.value === this.currentAccount.username &&
       +Dom.inputClosePin.value === this.currentAccount.pin
     ) {
-      const index: number = Data.accounts.findIndex(
+      const index: number = this.accountsData.findIndex(
         (account: any) => account.username === this.currentAccount.username
       );
 
       // Delete account
-      Data.accounts.splice(index, 1);
+      this.accountsData.splice(index, 1);
 
       // Hide UI
       Dom.containerApp.style.opacity = '0';
+
+      this.setLocalStorage();
     }
 
     Helper.clearInput(Dom.inputCloseUsername, Dom.inputClosePin);
@@ -245,6 +259,19 @@ class App {
     e.preventDefault();
     this.displayMovements(this.currentAccount, !this.sorted);
     this.sorted = !this.sorted;
+  }
+
+  private setLocalStorage() {
+    localStorage.setItem('accounts', JSON.stringify(this.accountsData));
+  }
+
+  private setDataToLocalStorage() {
+    localStorage.setItem('accounts', JSON.stringify(Data.accounts));
+  }
+
+  private getLocalStorage() {
+    const data = JSON.parse(localStorage.getItem('accounts'));
+    this.accountsData = data;
   }
 }
 

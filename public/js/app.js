@@ -4,7 +4,12 @@ import Dom from './Dom.js';
 import * as Helper from './helper.js';
 class App {
     constructor() {
-        this.createUsernames(Data.accounts);
+        // Check local storage
+        if (localStorage.getItem('accounts') === null) {
+            this.setDataToLocalStorage();
+        }
+        this.getLocalStorage();
+        this.createUsernames(this.accountsData);
         // Event Listeners
         Dom.btnLogin.addEventListener('click', this.login.bind(this));
         Dom.btnTransfer.addEventListener('click', this.transfer.bind(this));
@@ -24,7 +29,7 @@ class App {
     login(e) {
         var _a;
         e.preventDefault();
-        this.currentAccount = Data.accounts.find((account) => account.username === Dom.inputLoginUsername.value);
+        this.currentAccount = this.accountsData.find((account) => account.username === Dom.inputLoginUsername.value);
         if (((_a = this.currentAccount) === null || _a === void 0 ? void 0 : _a.pin) === +Dom.inputLoginPin.value) {
             // Display message
             Dom.labelWelcome.textContent = `Welcome back, ${this.currentAccount.owner.split(' ')[0]}`;
@@ -95,7 +100,7 @@ class App {
     transfer(e) {
         e.preventDefault();
         const amount = Math.floor(+Dom.inputTransferAmount.value);
-        const receiverAccount = Data.accounts.find((account) => account.username === Dom.inputTransferTo.value);
+        const receiverAccount = this.accountsData.find((account) => account.username === Dom.inputTransferTo.value);
         Helper.clearInput(Dom.inputTransferAmount, Dom.inputTransferTo);
         // Process
         if (amount > 0 &&
@@ -113,6 +118,7 @@ class App {
                 receiverAccount.movementsDates.push(new Date().toISOString());
                 // Update UI
                 this.updateUI(this.currentAccount);
+                this.setLocalStorage();
             }, 5000);
         }
         else {
@@ -137,6 +143,7 @@ class App {
                 this.updateUI(this.currentAccount);
                 // Clear inputs
                 Helper.clearInput(Dom.inputLoanAmount);
+                this.setLocalStorage();
             }, 3000);
         }
         else {
@@ -149,11 +156,12 @@ class App {
         e.preventDefault();
         if (Dom.inputCloseUsername.value === this.currentAccount.username &&
             +Dom.inputClosePin.value === this.currentAccount.pin) {
-            const index = Data.accounts.findIndex((account) => account.username === this.currentAccount.username);
+            const index = this.accountsData.findIndex((account) => account.username === this.currentAccount.username);
             // Delete account
-            Data.accounts.splice(index, 1);
+            this.accountsData.splice(index, 1);
             // Hide UI
             Dom.containerApp.style.opacity = '0';
+            this.setLocalStorage();
         }
         Helper.clearInput(Dom.inputCloseUsername, Dom.inputClosePin);
     }
@@ -161,6 +169,16 @@ class App {
         e.preventDefault();
         this.displayMovements(this.currentAccount, !this.sorted);
         this.sorted = !this.sorted;
+    }
+    setLocalStorage() {
+        localStorage.setItem('accounts', JSON.stringify(this.accountsData));
+    }
+    setDataToLocalStorage() {
+        localStorage.setItem('accounts', JSON.stringify(Data.accounts));
+    }
+    getLocalStorage() {
+        const data = JSON.parse(localStorage.getItem('accounts'));
+        this.accountsData = data;
     }
 }
 new App();
