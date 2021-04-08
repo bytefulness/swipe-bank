@@ -50,6 +50,16 @@ class App {
       // Display UI
       Dom.containerApp.style.opacity = '100';
 
+      // Set date based on account language
+      Dom.labelDate.textContent = String(
+        new Intl.DateTimeFormat(this.currentAccount.locale, {
+          year: 'numeric',
+          // month: 'long',
+          month: 'numeric',
+          day: '2-digit',
+        }).format(new Date())
+      );
+
       // Clear Inputs
       Helper.clearInput(Dom.inputLoginUsername, Dom.inputLoginPin);
 
