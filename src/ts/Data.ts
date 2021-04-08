@@ -26,14 +26,14 @@ export const account1: account = {
     '2021-02-03T23:36:17.929Z',
     '2021-02-04T10:51:36.790Z',
   ],
-  currency: 'EUR',
-  locale: 'pt-PT', // de-DE
+  currency: 'USD',
+  locale: 'tr-TR', // de-DE
   username: '',
   balance: undefined,
 };
 
 export const account2: account = {
-  owner: 'Jack Dom',
+  owner: 'Jack Domleo',
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
@@ -48,8 +48,8 @@ export const account2: account = {
     '2020-06-25T18:49:59.371Z',
     '2020-07-26T12:01:20.894Z',
   ],
-  currency: 'USD',
-  locale: 'en-US',
+  currency: 'GBP',
+  locale: 'en-GB',
   username: '',
   balance: undefined,
 };
