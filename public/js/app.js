@@ -49,12 +49,12 @@ class App {
         const movs = sort
             ? [...account.movements].sort((a, b) => a - b)
             : account.movements;
-        // const movements:  = account.movements;
         // Render movements list
         movs.forEach((mov, i) => {
             const type = mov > 0 ? 'deposit' : 'withdrawal';
             const date = new Date(account.movementsDates[i]);
             const displayDate = Helper.formatMovementDate(date, account.locale);
+            // Render movement element
             const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
@@ -102,7 +102,7 @@ class App {
             receiverAccount &&
             this.currentAccount.balance >= amount &&
             (receiverAccount === null || receiverAccount === void 0 ? void 0 : receiverAccount.username) !== this.currentAccount.username) {
-            const message = 'Talimat alındı çok kısa sürede işleminiz gerçekleşecek.';
+            const message = 'We are processing your transaction will be completed in a short time.';
             Helper.displayMessage(message, 'info', 4);
             setTimeout(() => {
                 // Doing the transfer
@@ -116,7 +116,7 @@ class App {
             }, 5000);
         }
         else {
-            const message = 'İşleminizi gerçekleştiremiyoruz.';
+            const message = 'Failed transaction. Please contact us.';
             Helper.displayMessage(message, 'error', 3);
         }
     }
@@ -126,7 +126,7 @@ class App {
         if (amount > 0 &&
             this.currentAccount.movements.some((mov) => mov >= amount * 0.1)) {
             // Add movement
-            const message = 'Talimat alındı çok kısa sürede işleminiz gerçekleşecek';
+            const message = 'We are processing your transaction will be completed in a short time.';
             Helper.displayMessage(message, 'info', 3);
             setTimeout(() => {
                 // Add movements
@@ -156,7 +156,6 @@ class App {
             Dom.containerApp.style.opacity = '0';
         }
         Helper.clearInput(Dom.inputCloseUsername, Dom.inputClosePin);
-        console.log(Data.accounts);
     }
     sortMovements(e) {
         e.preventDefault();
